@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81328948fdd54c45a13f438dd331ddb, type: 3}
+  m_Name: DefaultCharacterInfo
+  m_EditorClassIdentifier: 
+  walkSpeed: 2
+  jogSpeed: 4
+  runSpeed: 8
+  airMultiplier: 0.5
+  strafeMagnitude: 0.5
+  rotationSpeed: 0.3
+  maxSlope: 45
+  slopeGravity: 10
+  slopeDistance: 0.3
+  accelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  decelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  accelerationSpeed: 20
+  decelerationSpeed: 1.2
+  movingFriction: {fileID: 13400000, guid: 45162044e883c7b4499700312a168a7c, type: 2}
+  stoppingFriction: {fileID: 13400000, guid: 4d890eac6c1446b489369ca6bac7db49, type: 2}
+  runSlideFriction: {fileID: 13400000, guid: 5ce58eeab86c1b843a3846c7d11b5d02, type: 2}
+  maxSlideTime: 2
+  jumpForce: 6
+  airJumps: 1
+  jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1.0063782
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  jumpCooldown: 0.2
+  jumpHoldTime: 0.1
+  coyoteTime: 0.1
+  gravMultiplier: 1.5
+  upDirectionDefault: {x: 0, y: 1, z: 0}
+  gravityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  movementAnimationDamping: 0.2
+  environmentTransitionTime: 0.2
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  wallRunTime: 2
+  wallRunMaxSpeed: 4
+  wallJumpForce: 12
+  wallJumpDistribution: 0.703
+  minDistanceFromGround: 0.5
+  wallCheckDistance: 0.6
+  WallRunCurveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: -1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ledgeMoveSpeed: 3
+  ledgeJumpAngle: 45
+  ledgeJumpForce: 6
+  ledgeGrabPause: 1
+  ledgeMovePause: 0.1
