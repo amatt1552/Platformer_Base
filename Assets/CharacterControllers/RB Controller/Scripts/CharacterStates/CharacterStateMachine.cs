@@ -43,6 +43,8 @@ public class CharacterStateMachine : BaseStateMachine
     const float DEFAULT_AIR_RESISTANCE = 0.2f;
     private float currentAcceleration;
     private float currentDeceleration;
+    //used for MoveTo function
+    private Vector3 lastPosition;
 
     public Vector2 moveInputValue { get; private set; }
     private Vector3 targetMoveDirectionXZ;
@@ -123,8 +125,8 @@ public class CharacterStateMachine : BaseStateMachine
     private RaycastHit frontRightWallHitIK;
 
     [Header("Ledge Detection")]
-    public float ledgeDetectionLength;
-    public float ledgeSphereRadius;
+    //public float ledgeDetectionLength;
+    //public float ledgeSphereRadius;
     public LayerMask whatIsLedge;
 
     private Transform lastLedge;
@@ -146,6 +148,7 @@ public class CharacterStateMachine : BaseStateMachine
     #region ------------------ Awake, Update, Etc ----------
     protected override void Awake()
     {
+        lastPosition = transform.position;
         yDirection = defaultValues.upDirectionDefault;
         rb = rb != null ? rb : GetComponent<Rigidbody>();
         characterCollider = characterCollider != null ? characterCollider : GetComponent<CapsuleCollider>();
@@ -513,8 +516,22 @@ public class CharacterStateMachine : BaseStateMachine
     public void MoveTo(float speed, Vector3 targetPosition) 
     {
         float distance = Vector3.Distance(transform.position, targetPosition);
-        float maxDistanceDelta = speed * Time.deltaTime * (distance / 2);
-        rb.MovePosition(Vector3.MoveTowards(transform.position, targetPosition, maxDistanceDelta));
+        Vector3 currentToTarget = targetPosition - transform.position;
+        Vector3 direction = currentToTarget.normalized;
+        Vector3 lastToTarget = targetPosition - lastPosition;
+
+        // Check if the object crossed the plane defined by the target point and movement direction
+        if (Vector3.Dot(currentToTarget, direction) < 0 && Vector3.Dot(lastToTarget, direction) >= 0)
+        {
+            Debug.Log("Object has passed the target point in the specified direction!");
+            rb.MovePosition(targetPosition);
+
+        }
+        else
+        {
+            rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
+        }
+        lastPosition = transform.position;
     }
 
     public void SetRotation(Quaternion targetRotation) 
@@ -769,7 +786,7 @@ public class CharacterStateMachine : BaseStateMachine
         bool ledgeDetection = Physics.Raycast(transform.position + offset, transform.forward, out ledgeHit, maxLedgeGrabDistance, whatIsLedge);
         
         if (!ledgeDetection) return false;
-        
+
         Debug.DrawLine(transform.position + offset, transform.position + offset + transform.forward, Color.blue);
 
         //Gets top of ledge for more consistent position on ledge
@@ -785,15 +802,18 @@ public class CharacterStateMachine : BaseStateMachine
 
         float distanceToLedge = Vector3.Distance(transform.position, targetLedgePosition);
 
-        if (distanceToLedge < maxLedgeGrabDistance && !OnLedge && ledgeHit.transform != lastLedge)
+        if (distanceToLedge < 2 && !OnLedge && ledgeHit.transform != lastLedge)
         {
             GrabLedge();
-            lastLedge = ledgeHit.transform;
+            
         }
+
+        lastLedge = ledgeHit.transform;
         return true;
     }
+
     /// <summary>
-    /// allows you to grab the same ledge.
+    /// allows you to grab the same ledge after jumping.
     /// </summary>
     public void ResetLastLedge() 
     {
@@ -849,11 +869,11 @@ public class CharacterStateMachine : BaseStateMachine
         _ledgeMovementLocked = false;
     }
 
-    public void MoveToLedge(float magnitude = 1) 
+    public bool MoveToLedge(float magnitude = 1) 
     {
         //Vector3 directionToLedge = topLedgeHit.point - transform.position;
         Vector3 targetPostion = topLedgeHit.point + (ledgeHit.normal * characterCollider.radius);
-        float distanceToLedge = Vector3.Distance(transform.position, topLedgeHit.point);
+        float distanceToLedge = Vector3.Distance(transform.position, targetPostion);
         Debug.DrawRay(ledgeHit.point, ledgeHit.normal,Color.yellow);
 
         // Move to ledge
@@ -861,13 +881,10 @@ public class CharacterStateMachine : BaseStateMachine
         {
             MoveTo(defaultValues.ledgeMoveSpeed * magnitude, targetPostion);
             SnapRotation(-ledgeHit.normal);
+            return false;
         }
 
-        //Exit if moved away somehow
-        if (distanceToLedge > maxLedgeGrabDistance) 
-        {
-            ExitLedge();
-        }
+        return true;
     }
 
     public void StartLedgeJump() 

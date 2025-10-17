@@ -31,7 +31,7 @@ public class SCh_WallJump : CharacterBaseState
     public override void FixedUpdateState()
     {
         base.FixedUpdateState();
-        StateMachine.UpdateWallJump();
+        StateMachine.Gravity();
     }
 
     public override void CheckSwitchStates()

@@ -18,6 +18,7 @@ public class SCh_Ground : CharacterBaseState
         SetSubState(StateFactory.GetState<SCh_Slowdown>());
         base.EnterState();
         StateMachine.ResetJump();
+        StateMachine.ResetLastLedge();
         coyoteCountdown = StateMachine.defaultValues.coyoteTime;
         StateMachine.animator.SetTrigger("Grounded");
         Debug.Log($"Grounded. is root: {isRootState}");

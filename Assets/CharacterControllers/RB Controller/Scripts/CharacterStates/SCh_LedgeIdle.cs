@@ -20,6 +20,7 @@ public class SCh_LedgeIdle : CharacterBaseState
     public override void ExitState()
     {
 
+        StateMachine.animator.ResetTrigger("LedgeIdle");
     }
 
     public override void InitializeSubState()
@@ -36,9 +37,9 @@ public class SCh_LedgeIdle : CharacterBaseState
     public override void CheckSwitchStates()
     {
         base.CheckSwitchStates();
-        if (SwitchToLedgeMovement()) return;
-        if (SwitchToLedgeDrop()) return;
         if (SwitchToLedgeJump()) return;
+        if (SwitchToLedgeDrop()) return;
+        if (SwitchToLedgeMovement()) return;
     }
 
     

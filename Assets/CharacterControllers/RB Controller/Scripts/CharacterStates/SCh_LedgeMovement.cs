@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 
 public class SCh_LedgeMovement : CharacterBaseState
 {
+    bool doneMoving;
     public SCh_LedgeMovement() { isRootState = true; }
     public override void EnterState()
     {
@@ -16,7 +17,7 @@ public class SCh_LedgeMovement : CharacterBaseState
 
     public override void ExitState()
     {
-
+        StateMachine.animator.ResetTrigger("LedgeMove");
     }
 
     public override void InitializeSubState()
@@ -29,18 +30,12 @@ public class SCh_LedgeMovement : CharacterBaseState
     public override void FixedUpdateState()
     {
         base.FixedUpdateState();
-        StateMachine.MoveToLedge();
+        doneMoving = StateMachine.MoveToLedge();
     }
     public override void CheckSwitchStates()
     {
         base.CheckSwitchStates();
-        Vector3 ledgePos = StateMachine.targetLedgePosition;
-        ledgePos.y = 0;
-        Vector3 characterPos = StateMachine.transform.position;
-        characterPos.y = 0;
-
-        float distance = Vector3.Distance(ledgePos, characterPos);
-        if(distance < 0.2f) 
+        if(doneMoving) 
         {
             TrySwitchStates(StateFactory.GetState<SCh_LedgeIdle>(), StateMachine.defaultValues.ledgeMovePause);
             return;

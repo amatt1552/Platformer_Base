@@ -212,7 +212,7 @@ public abstract class CharacterBaseState : BaseState
     {
         bool switchStatus = false;
         Vector3 rightDirection = StateMachine.transform.right;
-        Vector3 offset = (Vector3.down * 0.1f) - StateMachine.transform.forward;
+        Vector3 offset = Vector3.zero;//(Vector3.down * 0.1f) - StateMachine.transform.forward;
         float moveValue = StateMachine.moveInputValue.x;
         float magnitude = moveValue * wallCheckDistance;
 

@@ -165,7 +165,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  ledgeMoveSpeed: 3
+  ledgeMoveSpeed: 1
   ledgeJumpAngle: 45
   ledgeJumpForce: 6
   ledgeGrabPause: 1
