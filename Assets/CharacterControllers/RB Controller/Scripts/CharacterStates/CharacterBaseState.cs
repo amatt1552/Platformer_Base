@@ -20,6 +20,11 @@ public abstract class CharacterBaseState : BaseState
     /// </summary>
     protected const float fallingTimerValue = 0.8f;
 
+    /// <summary>
+    /// Value used to offset initial ledge detection down while on a ledge.
+    /// </summary>
+    protected Vector3 ledgeDetectionMovementOffset = Vector3.down * 0.05f;
+
     // Functions used to prevent rewriting commonly used code for my states.
 
     /// <summary>
@@ -216,7 +221,7 @@ public abstract class CharacterBaseState : BaseState
         float moveValue = StateMachine.moveInputValue.x;
         float magnitude = moveValue * wallCheckDistance;
 
-        if (StateMachine.LedgeDetection(rightDirection * magnitude + offset) && Mathf.Abs(moveValue) > 0.1f)
+        if (StateMachine.LedgeDetection(ledgeDetectionMovementOffset, rightDirection * magnitude + offset) && Mathf.Abs(moveValue) > 0.1f)
         {
             switchStatus = TrySwitchStates(StateFactory.GetState<SCh_LedgeMovement>());
         }

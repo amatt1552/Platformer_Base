@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -779,18 +781,43 @@ public class CharacterStateMachine : BaseStateMachine
     #endregion \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
     #region ------------------ Ledges ----------------------
-    public bool LedgeDetection(Vector3 offset) 
+    /// <summary>
+    /// Used to check for nearby Ledges.
+    /// </summary>
+    /// <param name="offset">Use this to change the origin.</param>
+    /// <param name=" moveDirection">Make sure direction has movement value attached (not normalized).</param>
+    /// <returns></returns>
+    public bool LedgeDetection(Vector3 offset, Vector3 moveDirection) 
     {
-
+        Debug.DrawLine(transform.position + offset + moveDirection,
+            transform.position + offset + moveDirection + transform.forward,
+            Color.blue);
         //Vector3 halfExtents = new Vector3(ledgeSphereRadius + extraRadius, 0.1f, ledgeSphereRadius + extraRadius);
-        bool ledgeDetection = Physics.Raycast(transform.position + offset, transform.forward, out ledgeHit, maxLedgeGrabDistance, whatIsLedge);
-        
-        if (!ledgeDetection) return false;
+        bool ledgeDetection = Physics.Raycast(transform.position + offset + moveDirection, transform.forward, out ledgeHit, maxLedgeGrabDistance, whatIsLedge);
 
-        Debug.DrawLine(transform.position + offset, transform.position + offset + transform.forward, Color.blue);
+        if (!ledgeDetection)
+        {
+            // checks for edge in direction 
+            Vector3 direction = moveDirection.normalized;
+            
+            // detect part of ledge that is in front of you.
+            ledgeDetection = Physics.Raycast(transform.position + offset + (direction * 0.05f), transform.forward, out ledgeHit, maxLedgeGrabDistance, whatIsLedge);
+            if (!ledgeDetection) return false;
+            
+            Debug.DrawLine(transform.position + offset + (direction * 0.05f),
+                transform.position + offset + (direction * 0.05f) + transform.forward,
+                Color.cyan);
+
+            // store the normal so player's rotation isnt off
+            // TODO add another raycast to get normal of front of edge
+            Vector3 oldNormal = ledgeHit.normal;
+            if (!GetSide(direction, ledgeHit, out ledgeHit, whatIsLedge)) return false;
+            
+            ledgeHit.normal = oldNormal;
+        }
 
         //Gets top of ledge for more consistent position on ledge
-        if (!GetTop(ledgeHit, out topLedgeHit, whatIsLedge)) return false;
+        if (!GetSide(Vector3.up, ledgeHit, out topLedgeHit, whatIsLedge)) return false;
 
         //Makes Movement have to finish before moving again
         if (!_ledgeMovementLocked)
@@ -820,7 +847,7 @@ public class CharacterStateMachine : BaseStateMachine
         lastLedge = null;
     }
 
-
+    [Obsolete]
     /// <summary>
     /// Gets top point of a collider found from raycastHit.
     /// </summary>
@@ -831,19 +858,54 @@ public class CharacterStateMachine : BaseStateMachine
         Vector3 forward = -hit.normal;
 
         //I need the extents of the collider to set origin position of raycast pointing down.
-        // this is set to full size in case point is at the bottom of the checked collider
-        float sizeY = col.bounds.extents.y * 2;
+        // this is set to full size + 1 in case point is at the bottom of the checked collider
+        float sizeY = (col.bounds.extents.y * 2) + 1;
         float forwardMagnitude = 0.05f;
 
         Vector3 origin = point;
-        origin += Vector3.up * (sizeY + 1);
+        origin += Vector3.up * sizeY;
         origin += forward * forwardMagnitude;
 
         Vector3 direction = Vector3.down;
         Debug.DrawLine(origin, origin + direction, Color.green);
-        return Physics.Raycast(origin, direction, out topHit, sizeY + 2, layerMask);
+        return Physics.Raycast(origin, direction, out topHit, sizeY, layerMask);
 
        
+    }
+    /// <summary>
+    /// Gets any side of the collider (not forward or back) from the RaycastHit hit.
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="hit"></param>
+    /// <param name="sideHit"></param>
+    /// <param name="layerMask"></param>
+    /// <returns></returns>
+    public bool GetSide(Vector3 direction, RaycastHit hit, out RaycastHit sideHit, LayerMask layerMask) 
+    {
+        Collider col = hit.collider;
+        Vector3 point = hit.point;
+        Vector3 forward = -hit.normal;
+
+        //I need the extents of the collider to set origin position of raycast.
+        // this is set to full size in case point is at the bottom of the checked collider
+        Vector3 size = col.bounds.extents * 2;
+
+        // Dot product is used with direction and size to determine the distance the ray can go.
+        // get the abs as we only need the size not direction
+        // 0.5 is added to dot to account for sides possibly being a bit farther than expected.
+        float dotDirectionSize = Mathf.Abs(Vector3.Dot(direction, size)) + 0.5f;
+        Debug.Log($"Extents: {dotDirectionSize}");
+        
+        float forwardMagnitude = 0.05f;
+
+        Vector3 origin = point;
+        origin += direction * (dotDirectionSize);
+        origin += forward * forwardMagnitude;
+
+        Debug.DrawLine(origin, origin - (direction * dotDirectionSize), Color.green);
+        // we add 1 to size to extend how far it can see sides (possibly allowing for slanted edges)
+        // TODO create public variable for this value.
+        return Physics.Raycast(origin, -direction, out sideHit, dotDirectionSize + 1f, layerMask);
     }
 
     private void GrabLedge() 
@@ -877,7 +939,7 @@ public class CharacterStateMachine : BaseStateMachine
         Debug.DrawRay(ledgeHit.point, ledgeHit.normal,Color.yellow);
 
         // Move to ledge
-        if (distanceToLedge > 0.1f)
+        if (distanceToLedge > 0.05f)
         {
             MoveTo(defaultValues.ledgeMoveSpeed * magnitude, targetPostion);
             SnapRotation(-ledgeHit.normal);

@@ -31,7 +31,7 @@ public class SCh_Jump : CharacterBaseState
     {
         base.FixedUpdateState();
         StateMachine.Gravity();
-        StateMachine.LedgeDetection(GetLedgeGrabOffset());
+        StateMachine.LedgeDetection(GetLedgeGrabOffset(), Vector3.zero);
     }
 
     public override void CheckSwitchStates()

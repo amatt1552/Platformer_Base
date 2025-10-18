@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class SCh_LedgeGrab : CharacterBaseState
 {
     const float _grabSpeed = 4;
+    bool reachedPoint;
     public SCh_LedgeGrab() 
     {
         isRootState = true;
@@ -33,12 +34,12 @@ public class SCh_LedgeGrab : CharacterBaseState
     public override void FixedUpdateState()
     {
         base.FixedUpdateState();
-        StateMachine.MoveToLedge(_grabSpeed);
+        reachedPoint = StateMachine.MoveToLedge(_grabSpeed);
     }
     public override void CheckSwitchStates()
     {
         base.CheckSwitchStates();
-        if(TrySwitchStates(StateFactory.GetState<SCh_LedgeIdle>())) return;
+        if(reachedPoint && TrySwitchStates(StateFactory.GetState<SCh_LedgeIdle>())) return;
     }
 
     

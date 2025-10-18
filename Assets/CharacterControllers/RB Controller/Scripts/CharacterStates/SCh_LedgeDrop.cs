@@ -14,7 +14,7 @@ public class SCh_LedgeDrop : CharacterBaseState
         Debug.Log($"Ledge Dropped. is root? {isRootState}");
         base.EnterState(); 
         StateMachine.animator.SetTrigger("LedgeDrop");
-        StateMachine.LedgeDetection(Vector3.zero); //This is needed to allow to get the ledge it is currently on before dropping.
+        StateMachine.LedgeDetection(Vector3.zero, Vector3.zero); //This is needed to allow to get the ledge it is currently on before dropping.
         StateMachine.EnablePhysics();
         StateMachine.ExitLedge();
         fallingTimer = fallingTimerValue;
@@ -36,7 +36,7 @@ public class SCh_LedgeDrop : CharacterBaseState
     {
         base.FixedUpdateState();
         StateMachine.Gravity();
-        StateMachine.LedgeDetection(GetLedgeGrabOffset());
+        StateMachine.LedgeDetection(GetLedgeGrabOffset(), Vector3.zero);
     }
 
     public override void CheckSwitchStates()
