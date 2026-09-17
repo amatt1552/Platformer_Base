@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class SCh_Slowdown : CharacterBaseState
+public class SCh_Slowdown : RBCharacterBaseState
 {
     public SCh_Slowdown() : base() { }
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_MoveDisabled : CharacterBaseState
+public class SCh_MoveDisabled : RBCharacterBaseState
 {
     public SCh_MoveDisabled() : base() { }
     public override void EnterState()

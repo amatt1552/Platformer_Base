@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SCh_Slide : CharacterBaseState
+public class SCh_Slide : RBCharacterBaseState
 {
     public SCh_Slide() : base() { }
 

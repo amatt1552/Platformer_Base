@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
-public class SCh_Ground : CharacterBaseState
+public class SCh_Ground : RBCharacterBaseState
 {
     float coyoteCountdown;
     bool trueGrounded;

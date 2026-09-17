@@ -523,7 +523,7 @@ public class AddForceTest : MonoBehaviour
     }
     public void RotateBody()
     {
-        bodyRotation = new(rb.angularVelocity.x, lookValue.x * characterInfo.rotationSpeed, rb.angularVelocity.z);
+        bodyRotation = new(rb.angularVelocity.x, lookValue.x * characterInfo.GetRotationalSpeed(), rb.angularVelocity.z);
         //transform.rotation *= Quaternion.AngleAxis(lookValue.x * characterInfo.rotationSpeed, Vector3.up);
     }
 

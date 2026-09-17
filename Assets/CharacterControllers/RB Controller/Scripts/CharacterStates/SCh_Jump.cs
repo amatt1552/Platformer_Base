@@ -2,7 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-public class SCh_Jump : CharacterBaseState
+public class SCh_Jump : RBCharacterBaseState
 {
     public SCh_Jump() : base()
     {

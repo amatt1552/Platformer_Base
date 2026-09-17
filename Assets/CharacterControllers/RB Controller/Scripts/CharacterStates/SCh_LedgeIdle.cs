@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_LedgeIdle : CharacterBaseState
+public class SCh_LedgeIdle : RBCharacterBaseState
 {
     public SCh_LedgeIdle() 
     {

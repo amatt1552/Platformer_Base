@@ -4,8 +4,8 @@ public abstract class BaseState
 {
     protected bool isRootState;
     protected bool StateTransitionInCooldown { get; private set; }
-    private float _transitionTimer;
-    protected BaseStateMachine _StateMachine { get; private set; }
+    public float _transitionTimer;
+    private BaseStateMachine _StateMachine;
     protected StateFactory StateFactory { get; private set; }
     protected BaseState CurrentSuperState { get; private set; }
     protected BaseState CurrentSubState { get; private set; }
@@ -78,9 +78,13 @@ public abstract class BaseState
     }
 
     /// <summary>
-    /// Initializes subStates
+    /// Initializes Sub States.
+    /// Currently only used on awake in state machines.
     /// </summary>
-    public abstract void InitializeSubState();
+    public virtual void InitializeSubState() 
+    {
+    
+    }
 
     /// <summary>
     /// Switches state if current state is not in cooldown.
@@ -113,14 +117,16 @@ public abstract class BaseState
         // Triggers Exit State
         ExitState();
         // Sets root State
-        if (CurrentSuperState == null)  isRootState = true; 
+        bool rootCheck = false;
+        if (CurrentSuperState == null)  rootCheck = true; 
 
         // Sets current state
-        if (isRootState)
+        if (rootCheck)
         {
             // Sets current state in State Machine
             newState.SetSubState(CurrentSubState);
             _StateMachine.currentState = newState;
+            _StateMachine.currentState.isRootState = true;
         }
         else
         {

@@ -27,6 +27,6 @@ public class BaseStateMachine : MonoBehaviour
 
     protected virtual void EnterStateListener(BaseState state) 
     {
-        Debug.Log($"Entered State {state}");
+        //Debug.Log($"Entered State {state}");
     }
 }

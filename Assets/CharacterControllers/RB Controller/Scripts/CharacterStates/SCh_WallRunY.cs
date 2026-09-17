@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_WallRunY : CharacterBaseState
+public class SCh_WallRunY : RBCharacterBaseState
 {
     public SCh_WallRunY()
     { 

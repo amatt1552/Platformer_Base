@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_WallRunXZ : CharacterBaseState
+public class SCh_WallRunXZ : RBCharacterBaseState
 {
     public SCh_WallRunXZ() : base() { }
     public override void EnterState()

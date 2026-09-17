@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SCh_Falling : CharacterBaseState
+public class SCh_Falling : RBCharacterBaseState
 {
     public SCh_Falling() : base()
     {

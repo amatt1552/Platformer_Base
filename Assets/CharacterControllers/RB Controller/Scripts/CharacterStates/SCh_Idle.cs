@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_Idle : CharacterBaseState
+public class SCh_Idle : RBCharacterBaseState
 {
     public SCh_Idle() : base() { }
     public override void EnterState()

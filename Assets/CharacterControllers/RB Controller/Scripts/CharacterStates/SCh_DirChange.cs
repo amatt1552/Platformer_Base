@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class SCh_DirChange : CharacterBaseState
+public class SCh_DirChange : RBCharacterBaseState
 {
     public SCh_DirChange() : base() { }
 

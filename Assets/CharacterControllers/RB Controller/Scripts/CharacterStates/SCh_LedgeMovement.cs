@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_LedgeMovement : CharacterBaseState
+public class SCh_LedgeMovement : RBCharacterBaseState
 {
     bool doneMoving;
     public SCh_LedgeMovement() { isRootState = true; }

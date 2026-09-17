@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_LedgeGrab : CharacterBaseState
+public class SCh_LedgeGrab : RBCharacterBaseState
 {
     const float _grabSpeed = 4;
     bool reachedPoint;

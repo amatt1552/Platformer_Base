@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class SCh_Movement : CharacterBaseState
+public class SCh_Movement : RBCharacterBaseState
 {
     public SCh_Movement() : base() { }
 

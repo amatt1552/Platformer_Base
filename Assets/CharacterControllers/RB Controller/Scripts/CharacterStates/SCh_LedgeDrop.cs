@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SCh_LedgeDrop : CharacterBaseState
+public class SCh_LedgeDrop : RBCharacterBaseState
 {
     float fallingTimer;
     public SCh_LedgeDrop() 
