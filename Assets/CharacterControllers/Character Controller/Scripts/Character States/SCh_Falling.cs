@@ -21,7 +21,7 @@ namespace CHController
         public override void UpdateState()
         {
             base.UpdateState();
-            StateMachine.HandleGravity(StateMachine.fallGravityMagnitude);
+            StateMachine.HandleGravity(StateMachine.defaultValues.fallGravityMagnitude);
         }
         public override void CheckSwitchStates()
         {

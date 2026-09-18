@@ -78,30 +78,15 @@ MonoBehaviour:
   _runSlideFriction: {fileID: 0}
   _maxSlideTime: 2
   _jumpForce: 5
-  _jumpCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  _useJumpCombo: 0
+  _jumpComboTime: 0.2
+  _jumpComboSettings:
+  - jumpHeightModifier: 0
+    jumpTimeModifier: 1
+  - jumpHeightModifier: 8
+    jumpTimeModifier: 1.5
+  - jumpHeightModifier: 20
+    jumpTimeModifier: 2
   _maxJumpHeight: 4
   _maxJumpTime: 1
   _jumpCooldown: 0.5
@@ -133,7 +118,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _fallGravityMagnitude: 2
+  _fallGravityMagnitude: 1.5
   _jumpGravityMagnitude: 1
   _movementAnimationDamping: 0.2
   _environmentTransitionTime: 0.2

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,6 +14,7 @@ public enum RotationStyle
     RotateWithMovement
 }
 
+
 [CreateAssetMenu(fileName = "SO_Character", menuName = "Scriptable Objects/SO_Character")]
 
 /// <summary>
@@ -23,7 +26,7 @@ public enum RotationStyle
 public class SO_Character : ScriptableObject
 {
     //I want them to only be able modify the variables in the editor so all are serialized
-
+    #region ----------------- Editor Values ----------------
     [Header("MovementXZ")]
     [SerializeField]
     private float _walkSpeed = 2;
@@ -44,54 +47,69 @@ public class SO_Character : ScriptableObject
     private float _rotationSpeed = 1;
 
     [Tooltip("Speed used with rotation style rotate with move direction")]
-    [SerializeField] 
+    [SerializeField]
     private float _directionalRotationSpeed = 15;
 
+
     [Header("Slopes")]
-    [SerializeField] 
+    [SerializeField]
     private float _maxSlope = 45f;
-    [SerializeField] 
+    [SerializeField]
     private float _slopeGravity = 10f;
     [SerializeField]
     private float _slopeDistance = 0.3f;
 
+
     [Header("Acceleration and Deceleration")]
-    [SerializeField] 
+    [SerializeField]
     private AnimationCurve _accelerationCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField] 
+    [SerializeField]
     private AnimationCurve _decelerationCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField] 
+    [SerializeField]
     private float _accelerationSpeed = 4;
-    [SerializeField] 
+    [SerializeField]
     private float _decelerationSpeed = 4;
-    [SerializeField] 
+    [SerializeField]
     private PhysicsMaterial _movingFriction;
-    [SerializeField] 
+    [SerializeField]
     private PhysicsMaterial _stoppingFriction;
-    [SerializeField] 
+    [SerializeField]
     private PhysicsMaterial _runSlideFriction;
     [SerializeField]
     private float _maxSlideTime = 2;
 
+
     [Header("Jump")]
     [SerializeField] private float _jumpForce = 5;
     private int _airJumps = 1;
-    [SerializeField] 
+
+    [Tooltip("Allows for jumps to chain for new effects like in Mario")]
+    [SerializeField]
+    private bool _useJumpCombo = false;
+    [Tooltip("How long you can be grounded before jump combo ends.")]
+    [SerializeField]
+    private float _jumpComboTime = 0.1f;
+    [SerializeField]
+    private JumpComboSetting[] _jumpComboSettings = new JumpComboSetting[] { 
+        new JumpComboSetting(0, 1),
+        new JumpComboSetting(2, 1.25f), 
+        new JumpComboSetting(4, 1.5f) };
     private AnimationCurve _jumpCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    [SerializeField] 
+    [SerializeField]
     private float _maxJumpHeight = 4f;
     [SerializeField]
     private float _maxJumpTime = 0.25f;
 
     [Tooltip("How long it takes to be able to execjump again.")]
-    [SerializeField] 
+    [SerializeField]
     private float _jumpCooldown = 0.5f;
     [Tooltip("Allows pressing jump to be registered before landing.")]
-    [SerializeField] 
+    [SerializeField]
     private float _jumpHoldTime = 0.1f;
     [Tooltip("Allows ground jump for set time before falling.")]
-    [SerializeField] 
+    [SerializeField]
     private float _coyoteTime = 0.1f;
+
 
     [Header("Gravity")]
     [SerializeField]
@@ -105,11 +123,13 @@ public class SO_Character : ScriptableObject
     [SerializeField]
     private float _jumpGravityMagnitude = 1;
 
+
     [Header("Animation Settings")]
     [SerializeField]
     private float _movementAnimationDamping = 0.2f;
     [SerializeField]
     private float _environmentTransitionTime = 0.2f;
+
 
     [Header("Wall Running")]
     [SerializeField]
@@ -131,6 +151,7 @@ public class SO_Character : ScriptableObject
     [SerializeField]
     private AnimationCurve _WallRunCurveY = AnimationCurve.Linear(0, 0, 1, 1);
 
+
     [Header("Ledge Settings")]
     [SerializeField]
     private float _ledgeMoveSpeed = 1;
@@ -142,8 +163,10 @@ public class SO_Character : ScriptableObject
     private float _ledgeGrabPause = 1f;
     [SerializeField]
     private float _ledgeMovePause = 0.5f;
+    #endregion \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
+    #region ----------------- Public Getters ---------------
     //Public Lambda Getters
     //"MovementXZ
     public float walkSpeed => _walkSpeed;
@@ -178,6 +201,14 @@ public class SO_Character : ScriptableObject
     //Jump
     public float jumpForce => _jumpForce;
     public int airJumps => _airJumps;
+
+    [Tooltip("Allows for jumps to chain for new effects like in Mario")]
+    public bool useJumpCombo => _useJumpCombo;
+    [Tooltip("How long you can be grounded before jump combo ends.")]
+    public float jumpComboTime => _jumpComboTime;
+    public  JumpComboSetting[] jumpComboSettings => _jumpComboSettings;
+    
+
     public AnimationCurve jumpCurve => _jumpCurve;
     public float maxJumpHeight => _maxJumpHeight;
     public float maxJumpTime => _maxJumpTime;
@@ -218,6 +249,8 @@ public class SO_Character : ScriptableObject
     public float ledgeJumpForce => _ledgeJumpForce;
     public float ledgeGrabPause => _ledgeGrabPause;
     public float ledgeMovePause => _ledgeMovePause;
+    #endregion \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 
     /// <summary>
     /// Returns rotation speed based on rotation style used.
@@ -230,5 +263,27 @@ public class SO_Character : ScriptableObject
             return _directionalRotationSpeed;
         }
         return _rotationSpeed;
+    }
+    public void JumpComboInit(JumpComboSetting[] settings) 
+    {
+        if (_jumpComboSettings.Length == 0)
+        {
+            _jumpComboSettings = settings;
+        }
+    }
+}
+[Serializable]
+public class JumpComboSetting
+{
+    
+    [Tooltip("Should be used to add to jump height")]
+    public float jumpHeightModifier;
+    [Tooltip("Should be used to add to jump height")]
+    public float jumpTimeModifier;
+
+    public JumpComboSetting(float jumpHeightModifier, float jumpTimeModifier)
+    {
+        this.jumpHeightModifier = jumpHeightModifier;
+        this.jumpTimeModifier = jumpTimeModifier;
     }
 }

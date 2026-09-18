@@ -21,7 +21,7 @@ namespace CHController
         public override void UpdateState()
         {
             base.UpdateState();
-            StateMachine.HandleGravity(StateMachine.jumpGravityMagnitude);
+            StateMachine.HandleGravity(StateMachine.defaultValues.jumpGravityMagnitude);
         }
         public override void FixedUpdateState()
         {
@@ -31,7 +31,7 @@ namespace CHController
         {
             base.CheckSwitchStates();
             if (StateMachine.controller.isGrounded && TrySwitchStates(StateFactory.GetState<SCh_Ground>())) return;
-            if (!StateMachine.isJumping && TrySwitchStates(StateFactory.GetState<SCh_Falling>())) return;
+            if (StateMachine.IsFalling && TrySwitchStates(StateFactory.GetState<SCh_Falling>())) return;
         }
     }
 

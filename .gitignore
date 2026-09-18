@@ -103,4 +103,5 @@ InitTestScene*.unity*
 
 # Files I created that should be ignored
 /OldScripts/
+/keys/
 

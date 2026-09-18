@@ -31,15 +31,15 @@ namespace CHController
         Vector3 _gravityDirection = Vector3.down;
         float _gravity = 9.8f;
         float _groundedGravity = 1.0f;
-        public float fallGravityMagnitude = 2;
-        public float jumpGravityMagnitude = 1;
         public bool IsFalling { get; private set; }
 
         //jump
-        float _initialJumpVelocity;
+        private float[] _initialJumpVelocitys;
+        private float[] _JumpGravities;
         public bool JumpPressed { get; private set; }
         public bool isJumping { get; private set; }
-        private int _jumpCount;
+        private int _airJumpCount;
+        private int _jumpComboCount;
         private bool _jumpInCooldown;
 
         protected override void Awake()
@@ -94,8 +94,16 @@ namespace CHController
         private void SetupJumpVariables()
         {
             float timeToApex = defaultValues.maxJumpTime / 2;
-            _gravity = (2 * defaultValues.maxJumpHeight) / (timeToApex * timeToApex);
-            _initialJumpVelocity = (2 * defaultValues.maxJumpHeight) / timeToApex;
+            int length = defaultValues.jumpComboSettings.Length;
+            _initialJumpVelocitys = new float[length];
+            _JumpGravities = new float[length];
+            for (int i = 0; i < _initialJumpVelocitys.Length; i++)
+            {
+                _initialJumpVelocitys[i] = (2 * defaultValues.maxJumpHeight + defaultValues.jumpComboSettings[i].jumpHeightModifier) /
+                    (timeToApex * defaultValues.jumpComboSettings[i].jumpTimeModifier);
+                _JumpGravities[i] = (2 * (defaultValues.maxJumpHeight + defaultValues.jumpComboSettings[i].jumpHeightModifier)) / 
+                    Mathf.Pow((timeToApex * defaultValues.jumpComboSettings[i].jumpTimeModifier),2);
+            }
 
         }
 
@@ -178,11 +186,11 @@ namespace CHController
         {         
             //basically extracts the current vertical speed from the direction
             float verticalSpeed = Vector3.Dot(_currentMoveValueY, _gravityDirection);
-            IsFalling = verticalSpeed > _groundedGravity;
+            IsFalling = verticalSpeed >= 0;
             //+= apparently varies based on framerate so this tells the variable exactly where it should move per frame instead of using +=.
 
             Vector3 previousYVelocity = _currentMoveValueY;
-            Vector3 newYVelocity = _currentMoveValueY + (_gravityDirection * _gravity * gravityMultiplier * Time.deltaTime);
+            Vector3 newYVelocity = _currentMoveValueY + (_gravityDirection * _JumpGravities[_jumpComboCount] * gravityMultiplier * Time.deltaTime);
             Vector3 nextYVelocity = (previousYVelocity + newYVelocity) * 0.5f;
                 
             _currentMoveValueY = nextYVelocity;
@@ -190,13 +198,14 @@ namespace CHController
         
         public void TryJump(bool inAir = false) 
         {
-            
+            CancelInvoke(nameof(ResetJumpCombo));
+
             isJumping = true;
             //this allows character to jump in the opposite direction of the gravity.
-            _currentMoveValueY = -_gravityDirection * _initialJumpVelocity * 0.5f;
+            _currentMoveValueY = -_gravityDirection * _initialJumpVelocitys[_jumpComboCount] * 0.5f;
             if(inAir) 
             {
-                _jumpCount++;
+                _airJumpCount++;
             }
 
             //stops player from spamming jump.
@@ -215,12 +224,22 @@ namespace CHController
         }
         public void ResetJump()
         {
-            _jumpCount = 0;
+            _airJumpCount = 0;
+            _jumpComboCount++;
+            if(_jumpComboCount >= defaultValues.jumpComboSettings.Length) 
+            {
+                _jumpComboCount = 0;
+            }
+            Invoke(nameof(ResetJumpCombo), defaultValues.jumpComboTime);
             //_currentMoveValueY = gravityDirection * (groundedGravity * Time.deltaTime);
+        }
+        void ResetJumpCombo() 
+        {
+            _jumpComboCount = 0;
         }
         public bool CanAirJump()
         {
-            return _jumpCount < defaultValues.airJumps;
+            return _airJumpCount < defaultValues.airJumps;
         }
         public void JumpCooldownComplete() 
         {
