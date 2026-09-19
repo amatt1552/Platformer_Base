@@ -226,7 +226,7 @@ namespace CHController
         {
             _airJumpCount = 0;
             _jumpComboCount++;
-            if(_jumpComboCount >= defaultValues.jumpComboSettings.Length) 
+            if(_jumpComboCount >= defaultValues.jumpComboSettings.Length || !defaultValues.useJumpCombo) 
             {
                 _jumpComboCount = 0;
             }
@@ -241,7 +241,7 @@ namespace CHController
         {
             return _airJumpCount < defaultValues.airJumps;
         }
-        public void JumpCooldownComplete() 
+        void JumpCooldownComplete() 
         {
             JumpPressed = false;
         }
@@ -313,6 +313,7 @@ namespace CHController
             animator.SetFloat("DirX", dirX, defaultValues.movementAnimationDamping, Time.deltaTime);
             animator.SetFloat("DirZ", dirZ, defaultValues.movementAnimationDamping, Time.deltaTime);
             animator.SetFloat("RotationSpeed", lookAxisConversion, defaultValues.movementAnimationDamping, Time.deltaTime);
+            animator.SetInteger("JumpCombo", _jumpComboCount);
 
         }
     }

@@ -40,7 +40,7 @@ namespace CHController
         {
             // Used to call check switch states on child state.
             base.CheckSwitchStates();
-            if (StateMachine.JumpPressed && TrySwitchStates(StateFactory.GetState<SCh_Jump>(), 0.2f)) return;
+            if (StateMachine.JumpPressed && TrySwitchStates(StateFactory.GetState<SCh_Jump>(), 0.1f)) return;
             if (!StateMachine.controller.isGrounded && TrySwitchStates(StateFactory.GetState<SCh_Falling>())) return;
         }
     }

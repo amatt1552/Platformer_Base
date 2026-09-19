@@ -1,21 +1,21 @@
 using UnityEngine;
 namespace CHController
 {
-    public class SCh_Jump : CharacterBaseState
+    public class SCh_AirJump : CharacterBaseState
     {
-        public SCh_Jump() : base() { }
+        public SCh_AirJump() : base() { }
         public override void EnterState()
         {
             base.EnterState();
             Debug.Log($"Jumped. is root? {isRootState}");
-            StateMachine.TryJump();
-            StateMachine.animator.SetTrigger("Jump");
+            StateMachine.TryJump(true);
+            StateMachine.animator.SetTrigger("AirJump");
         }
 
         public override void ExitState()
         {
             StateMachine.JumpComplete();
-            StateMachine.animator.ResetTrigger("Jump");
+            StateMachine.animator.ResetTrigger("AirJump");
         }
 
         public override void UpdateState()
@@ -32,7 +32,6 @@ namespace CHController
             base.CheckSwitchStates();
             if (StateMachine.controller.isGrounded && TrySwitchStates(StateFactory.GetState<SCh_Ground>())) return;
             if (StateMachine.IsFalling && TrySwitchStates(StateFactory.GetState<SCh_Falling>())) return;
-            if (StateMachine.JumpPressed && StateMachine.CanAirJump() && TrySwitchStates(StateFactory.GetState<SCh_AirJump>())) return;
         }
     }
 

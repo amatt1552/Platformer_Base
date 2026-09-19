@@ -27,6 +27,7 @@ namespace CHController
         {
             base.CheckSwitchStates();
             if (StateMachine.controller.isGrounded && TrySwitchStates(StateFactory.GetState<SCh_Ground>())) return;
+            if (StateMachine.JumpPressed && StateMachine.CanAirJump() && TrySwitchStates(StateFactory.GetState<SCh_AirJump>())) return;
         }
     }
 }
